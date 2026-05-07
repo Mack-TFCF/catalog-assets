@@ -137,22 +137,37 @@ def get_asset_url(asset_id: str) -> str | None:
     return assets[0].get("public_url") or assets[0].get("url")
 
 
-def download_image(url: str) -> bytes | None:
-    """Download image bytes from a URL."""
+def download_image(url: str) -> tuple[bytes, str] | tuple[None, None]:
+    """Download image bytes from a URL. Returns (bytes, extension)."""
     try:
-        resp = requests.get(
-            url,
-            headers={"Authorization": MONDAY_API_TOKEN},
-            timeout=30
-        )
+        # S3 pre-signed URLs must NOT have Authorization header —
+        # it invalidates the signature. Only send auth to Monday domains.
+        is_monday = "monday.com" in url and "s3.amazonaws.com" not in url
+        headers = {"Authorization": MONDAY_API_TOKEN} if is_monday else {}
+
+        resp = requests.get(url, headers=headers, timeout=60)
         resp.raise_for_status()
-        if "image" in resp.headers.get("Content-Type", ""):
-            return resp.content
-        print(f"   ⚠️  URL did not return an image: {url[:60]}")
-        return None
+
+        content_type = resp.headers.get("Content-Type", "")
+        if "image" not in content_type and "octet-stream" not in content_type:
+            print(f"   ⚠️  URL did not return an image ({content_type}): {url[:60]}")
+            return None, None
+
+        # Determine file extension from content type or URL
+        if "webp" in content_type or url.lower().endswith(".webp"):
+            ext = ".webp"
+        elif "png" in content_type or url.lower().endswith(".png"):
+            ext = ".png"
+        elif "jpeg" in content_type or "jpg" in content_type:
+            ext = ".jpg"
+        else:
+            ext = ".jpg"  # fallback
+
+        return resp.content, ext
+
     except requests.RequestException as e:
         print(f"   ⚠️  Download failed: {e}")
-        return None
+        return None, None
 
 
 def sync_to_github(images: dict) -> None:
@@ -243,9 +258,11 @@ def main():
             continue
 
         img_bytes = download_image(url)
+        img_bytes, ext = download_image(url)
         if img_bytes:
-            filename = f"{IMAGES_FOLDER}/{slug}-render.jpg"
+            filename = f"{IMAGES_FOLDER}/{slug}-render{ext}"
             images_to_sync[filename] = img_bytes
+            print(f"   ✓  Got render for: {plan_name} ({ext})")
         else:
             missing.append(plan_name)
 
