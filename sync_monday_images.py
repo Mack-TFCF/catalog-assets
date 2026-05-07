@@ -5,35 +5,35 @@ sync_monday_images.py
 Fetches render images from the TFCF Monday catalog board and
 commits them to a GitHub repository as:
   images/{plan-slug}-render.jpg
-
+ 
 Usage:
   1. Copy .env.example to .env and fill in your tokens
   2. pip install requests python-dotenv PyGithub
   3. python sync_monday_images.py
-
+ 
 GitHub Actions will run this automatically on a schedule.
 """
-
+ 
 import os
 import re
 import sys
 import requests
 from dotenv import load_dotenv
 from github import Github, GithubException
-
+ 
 load_dotenv()
-
+ 
 # ── Config ────────────────────────────────────────────────────────────────────
 MONDAY_API_TOKEN  = os.getenv("MONDAY_API_TOKEN")
 GITHUB_TOKEN      = os.getenv("GITHUB_TOKEN")
 GITHUB_REPO       = os.getenv("GITHUB_REPO")          # e.g. "your-username/catalog-assets"
 CATALOG_BOARD_ID  = "9938332033"
-RENDER_COLUMN_ID  = "render"                           # Monday column title (lowercase match)
+RENDER_COLUMN_ID  = "file_mkvcehhr"                   # Monday "Render" file column ID
 IMAGES_FOLDER     = "images"
 MONDAY_API_URL    = "https://api.monday.com/v2"
 # ──────────────────────────────────────────────────────────────────────────────
-
-
+ 
+ 
 def validate_env():
     missing = [k for k in ["MONDAY_API_TOKEN", "GITHUB_TOKEN", "GITHUB_REPO"]
                if not os.getenv(k)]
@@ -41,8 +41,8 @@ def validate_env():
         print(f"❌  Missing environment variables: {', '.join(missing)}")
         print("    Copy .env.example to .env and fill in your values.")
         sys.exit(1)
-
-
+ 
+ 
 def to_slug(name: str) -> str:
     """Convert a Monday plan name to a filename slug."""
     s = name.lower()
@@ -51,8 +51,8 @@ def to_slug(name: str) -> str:
     s = re.sub(r"\s+", "-", s.strip())  # spaces → hyphens
     s = re.sub(r"-+", "-", s)           # collapse multiple hyphens
     return s.strip("-")
-
-
+ 
+ 
 def monday_query(query: str) -> dict:
     """Execute a Monday GraphQL query."""
     response = requests.post(
@@ -70,14 +70,14 @@ def monday_query(query: str) -> dict:
     if "errors" in data:
         raise RuntimeError(f"Monday API error: {data['errors']}")
     return data
-
-
+ 
+ 
 def get_catalog_items() -> list:
     """Fetch all items from the catalog board with their file assets."""
     print(f"📋  Fetching catalog board {CATALOG_BOARD_ID}...")
     all_items = []
     cursor = None
-
+ 
     while True:
         cursor_arg = f', cursor: "{cursor}"' if cursor else ""
         query = f"""
@@ -88,7 +88,7 @@ def get_catalog_items() -> list:
               items {{
                 id
                 name
-                column_values(ids: ["{RENDER_COLUMN_ID}"]) {{
+                column_values(ids: ["file_mkvcehhr"]) {{
                   ... on FileValue {{
                     files {{
                       asset_id
@@ -109,11 +109,11 @@ def get_catalog_items() -> list:
         if not cursor:
             break
         print(f"   Fetched {len(all_items)} items so far...")
-
+ 
     print(f"   ✓ {len(all_items)} catalog items found")
     return all_items
-
-
+ 
+ 
 def get_asset_url(asset_id: str) -> str | None:
     """Get a downloadable public URL for a Monday asset."""
     query = f"""
@@ -131,8 +131,8 @@ def get_asset_url(asset_id: str) -> str | None:
         return None
     # public_url is a temporary signed URL — valid for a few hours
     return assets[0].get("public_url") or assets[0].get("url")
-
-
+ 
+ 
 def download_image(url: str) -> bytes | None:
     """Download image bytes from a URL."""
     try:
@@ -149,8 +149,8 @@ def download_image(url: str) -> bytes | None:
     except requests.RequestException as e:
         print(f"   ⚠️  Download failed: {e}")
         return None
-
-
+ 
+ 
 def sync_to_github(images: dict) -> None:
     """
     Commit images to GitHub.
@@ -161,11 +161,11 @@ def sync_to_github(images: dict) -> None:
     gh   = Github(GITHUB_TOKEN)
     repo = gh.get_repo(GITHUB_REPO)
     ref  = repo.get_git_ref("heads/main")
-
+ 
     added   = 0
     updated = 0
     skipped = 0
-
+ 
     for path, content in images.items():
         try:
             existing = repo.get_contents(path)
@@ -198,60 +198,61 @@ def sync_to_github(images: dict) -> None:
                 added += 1
             else:
                 print(f"   ✗ Error on {path}: {e}")
-
+ 
     print(f"\n✅  Sync complete — {added} added, {updated} updated, {skipped} unchanged")
-
-
+ 
+ 
 def main():
     validate_env()
     items = get_catalog_items()
-
+ 
     images_to_sync = {}
     missing        = []
-
+ 
     for item in items:
         plan_name = item["name"].strip()
         if not plan_name or plan_name.lower() == "none":
             continue
-
+ 
         slug = to_slug(plan_name)
         col  = item.get("column_values", [])
         files = col[0].get("files", []) if col else []
-
+ 
         if not files:
             missing.append(plan_name)
             continue
-
+ 
         # Use the first file in the Render column
         asset = files[0]
         asset_id = asset.get("asset_id")
         if not asset_id:
             missing.append(plan_name)
             continue
-
+ 
         print(f"   ⬇  Downloading render for: {plan_name}")
         url = get_asset_url(str(asset_id))
         if not url:
             missing.append(plan_name)
             continue
-
+ 
         img_bytes = download_image(url)
         if img_bytes:
             filename = f"{IMAGES_FOLDER}/{slug}-render.jpg"
             images_to_sync[filename] = img_bytes
         else:
             missing.append(plan_name)
-
+ 
     if missing:
         print(f"\n⚠️  No render found for {len(missing)} plans:")
         for m in missing:
             print(f"    - {m}")
-
+ 
     if images_to_sync:
         sync_to_github(images_to_sync)
     else:
         print("\n⚠️  No images to sync.")
-
-
+ 
+ 
 if __name__ == "__main__":
     main()
+ 
