@@ -1,0 +1,54 @@
+# .github/workflows/sync-catalog.yml
+# ─────────────────────────────────────────────────────────────────────────────
+# Syncs the Monday catalog board to catalog.json in this repository.
+# Runs automatically every Sunday at 2am PT, and on manual trigger.
+#
+# Required repository secrets (Settings → Secrets → Actions):
+#   MONDAY_API_TOKEN   — Monday developer token
+#   CATALOG_GITHUB_PAT — Personal access token with repo write scope
+#                        (use a PAT, not GITHUB_TOKEN, so the commit
+#                        triggers the CDN cache invalidation properly)
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: Sync catalog from Monday
+
+on:
+  schedule:
+    - cron: "0 10 * * 0"   # Every Sunday 2am PT (10am UTC)
+  workflow_dispatch:         # Manual trigger from Actions tab
+    inputs:
+      reason:
+        description: "Reason for manual sync"
+        required: false
+        default: "Manual sync"
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests python-dotenv PyGithub
+
+      - name: Run catalog sync
+        env:
+          MONDAY_API_TOKEN: ${{ secrets.MONDAY_API_TOKEN }}
+          GITHUB_TOKEN:     ${{ secrets.CATALOG_GITHUB_PAT }}
+          GITHUB_REPO:      ${{ github.repository }}
+        run: python sync_catalog_json.py
+
+      - name: Run image sync
+        env:
+          MONDAY_API_TOKEN: ${{ secrets.MONDAY_API_TOKEN }}
+          GITHUB_TOKEN:     ${{ secrets.CATALOG_GITHUB_PAT }}
+          GITHUB_REPO:      ${{ github.repository }}
+        run: python sync_monday_images.py
