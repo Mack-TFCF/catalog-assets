@@ -64,6 +64,8 @@ OUTPUT_PATH      = "catalog.json"                  # path in the GitHub repo
 # Columns to fetch (everything the plan finder needs)
 COLUMN_IDS = [
     "text_mkvnr32v",          # Design Number
+    "text_mm0p5s7r",          # B&S Standard Plan # — floor plan identity key (same # = same floor plan)
+    "text_mkvb7334",          # Permit Number - BLDR # — structural variant identity
     "color_mm0q2xxk",         # Type (Main / ADU / Garage)
     "color_mkyrtwgf",         # Current Phase (AHJ - Approved / PC - Plan Check / etc.)
     "numeric_mkvbbxbv",       # Gross SF
@@ -333,14 +335,17 @@ def transform_items(raw_items: list) -> list:
         name_lower = name.lower()
         if (name_lower.startswith("test") or
                 name_lower.startswith("placeholder") or
-                name_lower.startswith("do not use")):
+                name_lower.startswith("do not use") or
+                name_lower == "none"):
             excluded_count += 1
             continue
-                  
+
         cv = item["column_values"]
 
         # ── Extract all fields ──────────────────────────────────────────────
         design_number   = extract_col(cv, "text_mkvnr32v")
+        bs_plan_number  = extract_col(cv, "text_mm0p5s7r")   # B&S Standard Plan # — floor plan identity
+        bldr_number     = extract_col(cv, "text_mkvb7334")   # Permit Number - BLDR #
         item_type       = extract_col(cv, "color_mm0q2xxk")       # Type (Main / Accessory)
         status          = extract_col(cv, "color_mkyrtwgf")        # Current Phase (AHJ - Approved / PC - Plan Check / etc.)
         gross_sf        = extract_number(cv, "numeric_mkvbbxbv")
@@ -382,8 +387,19 @@ def transform_items(raw_items: list) -> list:
         # ── Derive best factsheet URL ────────────────────────────────────────
         best_url = factsheet_url or website_url or None
 
-        # ── Use portfolio field, fall back to name ───────────────────────────
-        portfolio_key = portfolio or name
+        # ── Derive base portfolio name — strip structural variant suffixes ────
+        # "(Vault)", "(Truss)", "(Attached Garage)", "(Two Story)" etc. are
+        # structural variants of the same design. Strip them to get the canonical
+        # portfolio group name used for Problem 1 deduplication.
+        import re as _re
+        base_portfolio = _re.sub(
+            r'\s*\((vault|truss|attached garage|two story|detached garage)\)\s*$',
+            '', (portfolio or name), flags=_re.IGNORECASE
+        ).strip()
+
+        # Use base portfolio for grouping (deduplicates Vault/Truss variants)
+        # Fall back to full name if no portfolio relation set
+        portfolio_key = base_portfolio or name
 
         # ── Slug for image lookup ────────────────────────────────────────────
         slug = to_slug(name)
@@ -392,6 +408,8 @@ def transform_items(raw_items: list) -> list:
             "_id":                  item["id"],   # internal — used for dedup, stripped later
             "name":                 name,
             "designNumber":         design_number or None,
+            "bsPlanNumber":         bs_plan_number or None,  # floor plan identity (Problem 2 diversity key)
+            "bldrNumber":           bldr_number or None,     # structural permit number
             "portfolio":            portfolio_key,
             "type":                 item_type or None,
             "style":                norm_style,
