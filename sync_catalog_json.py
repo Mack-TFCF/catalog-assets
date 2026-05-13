@@ -230,7 +230,7 @@ def extract_portfolio_name(column_values: list, col_id: str) -> str:
     col = next((c for c in column_values if c["id"] == col_id), None)
     if not col:
         return ""
-    text = col.get("text", "").strip()
+    text = (col.get("text") or "").strip()
     if not text:
         return ""
     # Take the first linked item name if multiple are linked
