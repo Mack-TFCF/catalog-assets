@@ -2,7 +2,9 @@
   {
     "name": "The Lewis I (Vault)",
     "designNumber": "000a",
-    "portfolio": "The Lewis I (Vault)",
+    "bsPlanNumber": "27031",
+    "bldrNumber": "UNC-BLDR250505005072",
+    "portfolio": "The Lewis I",
     "type": "Main",
     "style": "Craftsman",
     "rawStyle": "Craftsman",
@@ -26,7 +28,9 @@
   {
     "name": "The Lewis I (Truss)",
     "designNumber": "000a",
-    "portfolio": "The Lewis I (Truss)",
+    "bsPlanNumber": "27031",
+    "bldrNumber": "UNC-BLDR250505005072",
+    "portfolio": "The Lewis I",
     "type": "Main",
     "style": "Craftsman",
     "rawStyle": "Craftsman",
@@ -44,13 +48,15 @@
     "ahjDate": "2025-10-27",
     "footprintNote": null,
     "slug": "the-lewis-i-truss",
-    "primaryVariant": true,
-    "scoreable": true
+    "primaryVariant": false,
+    "scoreable": false
   },
   {
     "name": "The Lewis II (Vault)",
     "designNumber": "000b",
-    "portfolio": "The Lewis II (Vault)",
+    "bsPlanNumber": "27031",
+    "bldrNumber": "UNC-BLDR250505005072",
+    "portfolio": "The Lewis II",
     "type": "Main",
     "style": "Craftsman",
     "rawStyle": "Craftsman",
@@ -74,7 +80,9 @@
   {
     "name": "The Lewis II (Truss)",
     "designNumber": "000b",
-    "portfolio": "The Lewis II (Truss)",
+    "bsPlanNumber": "27031",
+    "bldrNumber": "UNC-BLDR250505005072",
+    "portfolio": "The Lewis II",
     "type": "Main",
     "style": "Craftsman",
     "rawStyle": "Craftsman",
@@ -92,13 +100,15 @@
     "ahjDate": "2025-10-27",
     "footprintNote": null,
     "slug": "the-lewis-ii-truss",
-    "primaryVariant": true,
-    "scoreable": true
+    "primaryVariant": false,
+    "scoreable": false
   },
   {
     "name": "The Palm (Vault)",
     "designNumber": "000c",
-    "portfolio": "The Palm (Vault)",
+    "bsPlanNumber": "27031",
+    "bldrNumber": "UNC-BLDR250505005072",
+    "portfolio": "The Palm",
     "type": "Main",
     "style": "Ranch",
     "rawStyle": "Ranch",
@@ -122,7 +132,9 @@
   {
     "name": "The Palm (Truss)",
     "designNumber": "000c",
-    "portfolio": "The Palm (Truss)",
+    "bsPlanNumber": "27031",
+    "bldrNumber": "UNC-BLDR250505005072",
+    "portfolio": "The Palm",
     "type": "Main",
     "style": "Ranch",
     "rawStyle": "Ranch",
@@ -140,12 +152,14 @@
     "ahjDate": "2025-10-27",
     "footprintNote": null,
     "slug": "the-palm-truss",
-    "primaryVariant": true,
-    "scoreable": true
+    "primaryVariant": false,
+    "scoreable": false
   },
   {
     "name": "La Mariposa I",
     "designNumber": "000d",
+    "bsPlanNumber": "27020",
+    "bldrNumber": "UNC-BLDR250630007812",
     "portfolio": "La Mariposa I",
     "type": "Main",
     "style": "Spanish",
@@ -170,6 +184,8 @@
   {
     "name": "La Mariposa II",
     "designNumber": "000e",
+    "bsPlanNumber": "27020",
+    "bldrNumber": "UNC-BLDR250630007812",
     "portfolio": "La Mariposa II",
     "type": "Main",
     "style": "Spanish",
@@ -194,6 +210,8 @@
   {
     "name": "La Mariposa III",
     "designNumber": "000f",
+    "bsPlanNumber": "27020",
+    "bldrNumber": "UNC-BLDR250630007812",
     "portfolio": "La Mariposa III",
     "type": "Main",
     "style": "Spanish",
@@ -218,6 +236,8 @@
   {
     "name": "Casita Blanca",
     "designNumber": "001",
+    "bsPlanNumber": "27053",
+    "bldrNumber": "UNC-BLDR251121014937",
     "portfolio": "Casita Blanca",
     "type": "Main",
     "style": "Spanish",
@@ -242,6 +262,8 @@
   {
     "name": "The Elizabeth",
     "designNumber": "002a",
+    "bsPlanNumber": "27026",
+    "bldrNumber": "UNC-BLDR250903011156",
     "portfolio": "The Elizabeth",
     "type": "Main",
     "style": "Tudor Cottage",
@@ -266,6 +288,8 @@
   {
     "name": "The Gregory",
     "designNumber": "002b",
+    "bsPlanNumber": "27026",
+    "bldrNumber": "UNC-BLDR250903011156",
     "portfolio": "The Gregory",
     "type": "Main",
     "style": "Modern",
@@ -290,6 +314,8 @@
   {
     "name": "The Billy",
     "designNumber": "004a",
+    "bsPlanNumber": "27049",
+    "bldrNumber": "UNC-BLDR251107014336",
     "portfolio": "The Billy",
     "type": "Main",
     "style": "Ranch",
@@ -314,6 +340,8 @@
   {
     "name": "The Marlowe",
     "designNumber": "004b",
+    "bsPlanNumber": "27049",
+    "bldrNumber": "UNC-BLDR251107014336",
     "portfolio": "The Marlowe",
     "type": "Main",
     "style": "Tudor Cottage",
@@ -338,6 +366,8 @@
   {
     "name": "The Carmelina",
     "designNumber": "005a",
+    "bsPlanNumber": "27034",
+    "bldrNumber": "UNC-BLDR251010012978",
     "portfolio": "The Carmelina",
     "type": "Main",
     "style": "Spanish",
@@ -362,6 +392,8 @@
   {
     "name": "The Cromwell",
     "designNumber": "005b",
+    "bsPlanNumber": "27034",
+    "bldrNumber": "UNC-BLDR251010012978",
     "portfolio": "The Cromwell",
     "type": "Main",
     "style": "Tudor Cottage",
@@ -386,6 +418,8 @@
   {
     "name": "The Maybrook",
     "designNumber": "005c",
+    "bsPlanNumber": "27034",
+    "bldrNumber": "UNC-BLDR251010012978",
     "portfolio": "The Maybrook",
     "type": "Main",
     "style": "Ranch",
@@ -410,6 +444,8 @@
   {
     "name": "The Montana",
     "designNumber": "006a",
+    "bsPlanNumber": "27051",
+    "bldrNumber": "UNC-BLDR250826010701",
     "portfolio": "The Montana",
     "type": "Main",
     "style": "Ranch",
@@ -434,6 +470,8 @@
   {
     "name": "The Delaware",
     "designNumber": "006b",
+    "bsPlanNumber": "27051",
+    "bldrNumber": "UNC-BLDR250826010701",
     "portfolio": "The Delaware",
     "type": "Main",
     "style": "Colonial",
@@ -458,6 +496,8 @@
   {
     "name": "The Lexington",
     "designNumber": "007",
+    "bsPlanNumber": "27036",
+    "bldrNumber": "UNC-BLDR251016013223",
     "portfolio": "The Lexington",
     "type": "Main",
     "style": "Craftsman",
@@ -482,6 +522,8 @@
   {
     "name": "The Alice I",
     "designNumber": "008",
+    "bsPlanNumber": "27044",
+    "bldrNumber": "UNC-BLDR251103014089",
     "portfolio": "The Alice I",
     "type": "Main",
     "style": "Craftsman",
@@ -506,6 +548,8 @@
   {
     "name": "The Alice II",
     "designNumber": "008b",
+    "bsPlanNumber": null,
+    "bldrNumber": "UNC-BLDR251103014089",
     "portfolio": "The Alice II",
     "type": null,
     "style": "Craftsman",
@@ -530,6 +574,8 @@
   {
     "name": "The Elderflower",
     "designNumber": "009a",
+    "bsPlanNumber": "27037",
+    "bldrNumber": "UNC-BLDR250918011839",
     "portfolio": "The Elderflower",
     "type": "Main",
     "style": "Craftsman",
@@ -554,7 +600,9 @@
   {
     "name": "The Elderflower (Attached Garage)",
     "designNumber": "009b",
-    "portfolio": "The Elderflower (Attached Garage)",
+    "bsPlanNumber": "27037",
+    "bldrNumber": "UNC-BLDR250918011839",
+    "portfolio": "The Elderflower",
     "type": "Garage",
     "style": "Craftsman",
     "rawStyle": "Craftsman",
@@ -572,12 +620,14 @@
     "ahjDate": "2025-10-20",
     "footprintNote": null,
     "slug": "the-elderflower-attached-garage",
-    "primaryVariant": true,
+    "primaryVariant": false,
     "scoreable": false
   },
   {
     "name": "La Solana",
     "designNumber": "010",
+    "bsPlanNumber": "27019",
+    "bldrNumber": "UNC-BLDR250812009969",
     "portfolio": "La Solana",
     "type": "Main",
     "style": "Spanish",
@@ -602,6 +652,8 @@
   {
     "name": "Carport C2S (Two Car, Shed Roof)",
     "designNumber": "011",
+    "bsPlanNumber": "27028",
+    "bldrNumber": "BLDR250903011160",
     "portfolio": "Carport C2S (Two Car, Shed Roof)",
     "type": "Garage",
     "style": null,
@@ -626,6 +678,8 @@
   {
     "name": "Carports C1S (One Car, Shed Roof)",
     "designNumber": "011",
+    "bsPlanNumber": "27028",
+    "bldrNumber": "BLDR250903011160",
     "portfolio": "Carports C1S (One Car, Shed Roof)",
     "type": "Garage",
     "style": null,
@@ -650,6 +704,8 @@
   {
     "name": "Carport C1G (One Car, Gable Roof)",
     "designNumber": "011",
+    "bsPlanNumber": "27028",
+    "bldrNumber": "BLDR250903011160",
     "portfolio": "Carport C1G (One Car, Gable Roof)",
     "type": "Garage",
     "style": null,
@@ -674,6 +730,8 @@
   {
     "name": "Carport C2G (Two Car, Gable Roof)",
     "designNumber": "011",
+    "bsPlanNumber": "27028",
+    "bldrNumber": "BLDR250903011160",
     "portfolio": "Carport C2G (Two Car, Gable Roof)",
     "type": "Garage",
     "style": null,
@@ -698,6 +756,8 @@
   {
     "name": "Garage 24A (Craftsman)",
     "designNumber": "011",
+    "bsPlanNumber": "27028",
+    "bldrNumber": "BLDR250903011160",
     "portfolio": "Garage 24A (Craftsman)",
     "type": "Garage",
     "style": "Craftsman",
@@ -722,6 +782,8 @@
   {
     "name": "Garage 24B (Spanish)",
     "designNumber": "011",
+    "bsPlanNumber": "27028",
+    "bldrNumber": "BLDR250903011160",
     "portfolio": "Garage 24B (Spanish)",
     "type": "Garage",
     "style": "Spanish",
@@ -746,6 +808,8 @@
   {
     "name": "Garage 24C (Ranch)",
     "designNumber": "011",
+    "bsPlanNumber": "27028",
+    "bldrNumber": "BLDR250903011160",
     "portfolio": "Garage 24C (Ranch)",
     "type": "Garage",
     "style": "Ranch",
@@ -770,6 +834,8 @@
   {
     "name": "Garage 24 D (Tudor)",
     "designNumber": "011",
+    "bsPlanNumber": "27028",
+    "bldrNumber": "BLDR250903011160",
     "portfolio": "Garage 24 D (Tudor)",
     "type": "Garage",
     "style": "Tudor Cottage",
@@ -794,6 +860,8 @@
   {
     "name": "Garage 24 E (Modern)",
     "designNumber": "011",
+    "bsPlanNumber": "27028",
+    "bldrNumber": "BLDR250903011160",
     "portfolio": "Garage 24 E (Modern)",
     "type": "Garage",
     "style": "Modern",
@@ -818,6 +886,8 @@
   {
     "name": "Garage 20A (Craftsman)",
     "designNumber": "011",
+    "bsPlanNumber": "27028",
+    "bldrNumber": "BLDR250903011160",
     "portfolio": "Garage 20A (Craftsman)",
     "type": "Garage",
     "style": "Craftsman",
@@ -842,6 +912,8 @@
   {
     "name": "Garage 20B (Spanish)",
     "designNumber": "011",
+    "bsPlanNumber": "27028",
+    "bldrNumber": "BLDR250903011160",
     "portfolio": "Garage 20B (Spanish)",
     "type": "Garage",
     "style": "Spanish",
@@ -866,6 +938,8 @@
   {
     "name": "Garage 20C (Ranch)",
     "designNumber": "011",
+    "bsPlanNumber": "27028",
+    "bldrNumber": "BLDR250903011160",
     "portfolio": "Garage 20C (Ranch)",
     "type": "Garage",
     "style": "Ranch",
@@ -890,6 +964,8 @@
   {
     "name": "Garage 20D (Tudor)",
     "designNumber": "011",
+    "bsPlanNumber": "27028",
+    "bldrNumber": "BLDR250903011160",
     "portfolio": "Garage 20D (Tudor)",
     "type": "Garage",
     "style": "Tudor Cottage",
@@ -914,6 +990,8 @@
   {
     "name": "Garage 20E (Modern)",
     "designNumber": "011",
+    "bsPlanNumber": "27028",
+    "bldrNumber": "BLDR250903011160",
     "portfolio": "Garage 20E (Modern)",
     "type": "Garage",
     "style": "Modern",
@@ -938,6 +1016,8 @@
   {
     "name": "Garage 15A (Craftsman)",
     "designNumber": "011",
+    "bsPlanNumber": "27028",
+    "bldrNumber": "BLDR250903011160",
     "portfolio": "Garage 15A (Craftsman)",
     "type": "Garage",
     "style": "Craftsman",
@@ -962,6 +1042,8 @@
   {
     "name": "Garage 15B (Spanish)",
     "designNumber": "011",
+    "bsPlanNumber": "27028",
+    "bldrNumber": "BLDR250903011160",
     "portfolio": "Garage 15B (Spanish)",
     "type": "Garage",
     "style": "Spanish",
@@ -986,6 +1068,8 @@
   {
     "name": "Garage 15C (Ranch)",
     "designNumber": "011",
+    "bsPlanNumber": "27028",
+    "bldrNumber": "BLDR250903011160",
     "portfolio": "Garage 15C (Ranch)",
     "type": "Garage",
     "style": "Ranch",
@@ -1010,6 +1094,8 @@
   {
     "name": "Garage 15D (Tudor)",
     "designNumber": "011",
+    "bsPlanNumber": "27028",
+    "bldrNumber": "BLDR250903011160",
     "portfolio": "Garage 15D (Tudor)",
     "type": "Garage",
     "style": "Tudor Cottage",
@@ -1034,6 +1120,8 @@
   {
     "name": "Garage 15E (Modern)",
     "designNumber": "011",
+    "bsPlanNumber": "27028",
+    "bldrNumber": "BLDR250903011160",
     "portfolio": "Garage 15E (Modern)",
     "type": "Garage",
     "style": "Modern",
@@ -1058,6 +1146,8 @@
   {
     "name": "The Daisy",
     "designNumber": "012a",
+    "bsPlanNumber": "27029",
+    "bldrNumber": "UNC-BLDR250908011377",
     "portfolio": "The Daisy",
     "type": "ADU",
     "style": "Craftsman",
@@ -1082,6 +1172,8 @@
   {
     "name": "The Dahlia",
     "designNumber": "012b",
+    "bsPlanNumber": "27029",
+    "bldrNumber": "UNC-BLDR250908011377",
     "portfolio": "The Dahlia",
     "type": "ADU",
     "style": "Spanish",
@@ -1106,6 +1198,8 @@
   {
     "name": "The Lily",
     "designNumber": "012c",
+    "bsPlanNumber": "27029",
+    "bldrNumber": "UNC-BLDR250908011377",
     "portfolio": "The Lily",
     "type": "ADU",
     "style": "Tudor Cottage",
@@ -1130,6 +1224,8 @@
   {
     "name": "The Figueroa I",
     "designNumber": "013a",
+    "bsPlanNumber": "TBD",
+    "bldrNumber": "UNC-BLDR260115000478",
     "portfolio": "The Figueroa I",
     "type": "Main",
     "style": "Spanish",
@@ -1154,7 +1250,9 @@
   {
     "name": "The Figueroa II (two story)",
     "designNumber": "013b",
-    "portfolio": "The Figueroa II (two story)",
+    "bsPlanNumber": "TBD",
+    "bldrNumber": "UNC-BLDR260115000479",
+    "portfolio": "The Figueroa II",
     "type": "Main",
     "style": "Spanish",
     "rawStyle": "Spanish",
@@ -1178,6 +1276,8 @@
   {
     "name": "The Monterrey I",
     "designNumber": "013c",
+    "bsPlanNumber": "TBD",
+    "bldrNumber": "UNC-BLDR260115000478",
     "portfolio": "The Monterrey I",
     "type": "Main",
     "style": "Spanish",
@@ -1202,7 +1302,9 @@
   {
     "name": "The Monterrey II (two story)",
     "designNumber": "013d",
-    "portfolio": "The Monterrey II (two story)",
+    "bsPlanNumber": "TBD",
+    "bldrNumber": "UNC-BLDR260115000479",
+    "portfolio": "The Monterrey II",
     "type": "Main",
     "style": "Spanish",
     "rawStyle": "Spanish",
@@ -1226,6 +1328,8 @@
   {
     "name": "The Ellwood I",
     "designNumber": "014a",
+    "bsPlanNumber": "TBD",
+    "bldrNumber": "UNC-BLDR260204001257",
     "portfolio": "The Ellwood I",
     "type": "Main",
     "style": "Modern",
@@ -1250,6 +1354,8 @@
   {
     "name": "The Ellwood II",
     "designNumber": "014b",
+    "bsPlanNumber": "TBD",
+    "bldrNumber": "UNC-BLDR260204001257",
     "portfolio": "The Ellwood II",
     "type": "Main",
     "style": "Modern",
@@ -1274,6 +1380,8 @@
   {
     "name": "El Abuelito I",
     "designNumber": "016",
+    "bsPlanNumber": "27057",
+    "bldrNumber": "UNC-BLDR251117014623",
     "portfolio": "El Abuelito I",
     "type": "ADU",
     "style": "Spanish",
@@ -1298,6 +1406,8 @@
   {
     "name": "El Abuelito II",
     "designNumber": "016b",
+    "bsPlanNumber": "27057",
+    "bldrNumber": "UNC-BLDR251117014623",
     "portfolio": "El Abuelito II",
     "type": "ADU",
     "style": "Spanish",
@@ -1322,6 +1432,8 @@
   {
     "name": "La Abuelita",
     "designNumber": "016c",
+    "bsPlanNumber": "27057",
+    "bldrNumber": "UNC-BLDR251117014623",
     "portfolio": "La Abuelita",
     "type": "ADU",
     "style": "Spanish",
@@ -1346,6 +1458,8 @@
   {
     "name": "The Opa I",
     "designNumber": "016d",
+    "bsPlanNumber": "27057",
+    "bldrNumber": "UNC-BLDR251117014623",
     "portfolio": "The Opa I",
     "type": "ADU",
     "style": "Craftsman",
@@ -1370,6 +1484,8 @@
   {
     "name": "The Opa II",
     "designNumber": "016e",
+    "bsPlanNumber": "27057",
+    "bldrNumber": "UNC-BLDR251117014623",
     "portfolio": "The Opa II",
     "type": "ADU",
     "style": "Craftsman",
@@ -1394,6 +1510,8 @@
   {
     "name": "The Oma",
     "designNumber": "016f",
+    "bsPlanNumber": "TBD",
+    "bldrNumber": "UNC-BLDR251117014623",
     "portfolio": "The Oma",
     "type": "ADU",
     "style": "Craftsman",
@@ -1418,6 +1536,8 @@
   {
     "name": "The Martha",
     "designNumber": "019",
+    "bsPlanNumber": "TBD",
+    "bldrNumber": null,
     "portfolio": "The Martha",
     "type": "Main",
     "style": "Colonial",
@@ -1442,6 +1562,8 @@
   {
     "name": "La Paz (La County)",
     "designNumber": "020",
+    "bsPlanNumber": "TBD",
+    "bldrNumber": "BLDR260113000387",
     "portfolio": "La Paz (La County)",
     "type": "Main",
     "style": "Spanish",
@@ -1466,6 +1588,8 @@
   {
     "name": "La Paz (LA City)",
     "designNumber": "020",
+    "bsPlanNumber": "TBD",
+    "bldrNumber": null,
     "portfolio": "La Paz (LA City)",
     "type": "Main",
     "style": "Spanish",
@@ -1490,6 +1614,8 @@
   {
     "name": "The Billy (LA City)",
     "designNumber": "021a",
+    "bsPlanNumber": "TBD",
+    "bldrNumber": null,
     "portfolio": "The Billy (LA City)",
     "type": "Main",
     "style": "Ranch",
@@ -1514,6 +1640,8 @@
   {
     "name": "El Guillermo (LA City)",
     "designNumber": "021b",
+    "bsPlanNumber": null,
+    "bldrNumber": null,
     "portfolio": "El Guillermo (LA City)",
     "type": null,
     "style": "Spanish",
@@ -1538,6 +1666,8 @@
   {
     "name": "The Whitfield",
     "designNumber": "022",
+    "bsPlanNumber": "TBD",
+    "bldrNumber": null,
     "portfolio": "The Whitfield",
     "type": "Main",
     "style": "Colonial",
@@ -1562,6 +1692,8 @@
   {
     "name": "The Bashford",
     "designNumber": "023",
+    "bsPlanNumber": "TBD",
+    "bldrNumber": null,
     "portfolio": "The Bashford",
     "type": "Main",
     "style": "Ranch",
@@ -1586,6 +1718,8 @@
   {
     "name": "The Glen",
     "designNumber": "023a",
+    "bsPlanNumber": "TBD",
+    "bldrNumber": "BLDR250805009597",
     "portfolio": "The Glen",
     "type": "Main",
     "style": "Craftsman",
@@ -1610,6 +1744,8 @@
   {
     "name": "Lewis JADU",
     "designNumber": "024",
+    "bsPlanNumber": "TBD",
+    "bldrNumber": null,
     "portfolio": "Lewis JADU",
     "type": "ADU",
     "style": "Craftsman",
@@ -1634,6 +1770,8 @@
   {
     "name": "Elderflower JADU",
     "designNumber": "025",
+    "bsPlanNumber": "TBD",
+    "bldrNumber": null,
     "portfolio": "Elderflower JADU",
     "type": "ADU",
     "style": "Craftsman",
@@ -1658,6 +1796,8 @@
   {
     "name": "The Wagner I",
     "designNumber": "026",
+    "bsPlanNumber": "TBD",
+    "bldrNumber": "BLDR260203001190",
     "portfolio": "The Wagner I",
     "type": "ADU",
     "style": "Craftsman",
@@ -1682,6 +1822,8 @@
   {
     "name": "The Wagner II",
     "designNumber": "026b",
+    "bsPlanNumber": "TBD",
+    "bldrNumber": "BLDR260203001190",
     "portfolio": "The Wagner II",
     "type": "ADU",
     "style": "Craftsman",
@@ -1706,6 +1848,8 @@
   {
     "name": "The Wagner III",
     "designNumber": "026c",
+    "bsPlanNumber": "TBD",
+    "bldrNumber": "BLDR260203001190",
     "portfolio": "The Wagner III",
     "type": "ADU",
     "style": "Craftsman",
@@ -1730,6 +1874,8 @@
   {
     "name": "La Calanda I",
     "designNumber": "026d",
+    "bsPlanNumber": "TBD",
+    "bldrNumber": "BLDR260203001190",
     "portfolio": "La Calanda I",
     "type": "ADU",
     "style": "Spanish",
@@ -1754,6 +1900,8 @@
   {
     "name": "La Calanda II",
     "designNumber": "026e",
+    "bsPlanNumber": "TBD",
+    "bldrNumber": "BLDR260203001190",
     "portfolio": "La Calanda II",
     "type": "ADU",
     "style": "Spanish",
@@ -1778,6 +1926,8 @@
   {
     "name": "La Calanda III",
     "designNumber": "026f",
+    "bsPlanNumber": "TBD",
+    "bldrNumber": "BLDR260203001190",
     "portfolio": "La Calanda III",
     "type": "ADU",
     "style": "Spanish",
