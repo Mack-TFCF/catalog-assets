@@ -329,6 +329,14 @@ def transform_items(raw_items: list) -> list:
         if not name or name.lower() == "none":
             continue
 
+        # Skip obvious test/placeholder entries
+        name_lower = name.lower()
+        if (name_lower.startswith("test") or
+                name_lower.startswith("placeholder") or
+                name_lower.startswith("do not use")):
+            excluded_count += 1
+            continue
+                  
         cv = item["column_values"]
 
         # ── Extract all fields ──────────────────────────────────────────────
