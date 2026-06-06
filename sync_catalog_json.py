@@ -314,17 +314,58 @@ def determine_primary_variant(items_by_portfolio: dict) -> set:
     return primary_ids
 
 
-# Plans must be in one of these statuses to appear in the app.
-# Values match the exact label text in the Current Phase column (color_mkyrtwgf).
-# Everything else (CD, DD, SD, CP, ZC, blank) is excluded entirely.
+# Finder-visible Current Phase values. The export includes the full catalog
+# lifecycle, but Finder recommendation scoring should still use this subset.
 ACTIVE_STATUSES = {"AHJ - Approved", "PC - Plan Check"}
+
+NULL_PLAN_NUMBERS = {"", "TBD", "N/A", "NA"}
+
+
+def normalize_bs_plan_number(value: str) -> str | None:
+    """Normalize non-joinable B&S plan numbers to null for analytics."""
+    text = (value or "").strip()
+    if text.upper() in NULL_PLAN_NUMBERS:
+        return None
+    return text
+
+
+def derive_phase_group(current_phase: str) -> str:
+    """Map Monday Current Phase values to Intelligence lifecycle buckets."""
+    phase = (current_phase or "").strip()
+    if not phase:
+        return "unknown"
+
+    normalized = re.sub(r"\s+", " ", phase).strip().lower()
+    prefix_match = re.match(r"^([a-z]{2,4})(?:\b|\s*-)", normalized)
+    phase_code = prefix_match.group(1).upper() if prefix_match else ""
+
+    if phase_code == "AHJ" and "approved" in normalized:
+        return "approved"
+    if phase_code in {"PC", "AHJ"}:
+        return "in_review"
+    if phase_code == "CD":
+        return "developed"
+    if phase_code in {"CP", "SD", "DD", "ZC"}:
+        return "development"
+
+    if "approved" in normalized or "pre-approved" in normalized:
+        return "approved"
+    if "construction documentation" in normalized or "construction documents" in normalized:
+        return "developed"
+    if "zoning" in normalized or "schematic" in normalized or "design development" in normalized:
+        return "development"
+    if "plan check" in normalized or "review" in normalized:
+        return "in_review"
+
+    return "unknown"
 
 
 def transform_items(raw_items: list) -> list:
     """Transform raw Monday items into the catalog JSON schema."""
     results = []
     items_by_portfolio = {}
-    excluded_count = 0
+    active_items_by_portfolio = {}
+    skipped_count = 0
 
     for item in raw_items:
         name = item["name"].strip()
@@ -337,17 +378,18 @@ def transform_items(raw_items: list) -> list:
                 name_lower.startswith("placeholder") or
                 name_lower.startswith("do not use") or
                 name_lower == "none"):
-            excluded_count += 1
+            skipped_count += 1
             continue
 
         cv = item["column_values"]
 
         # ── Extract all fields ──────────────────────────────────────────────
         design_number   = extract_col(cv, "text_mkvnr32v")
-        bs_plan_number  = extract_col(cv, "text_mm0p5s7r")   # B&S Standard Plan # — floor plan identity
+        raw_bs_plan_number = extract_col(cv, "text_mm0p5s7r") # B&S Standard Plan # — floor plan identity
+        bs_plan_number  = normalize_bs_plan_number(raw_bs_plan_number)
         bldr_number     = extract_col(cv, "text_mkvb7334")   # Permit Number - BLDR #
         item_type       = extract_col(cv, "color_mm0q2xxk")       # Type (Main / Accessory)
-        status          = extract_col(cv, "color_mkyrtwgf")        # Current Phase (AHJ - Approved / PC - Plan Check / etc.)
+        current_phase   = extract_col(cv, "color_mkyrtwgf")        # Current Phase (AHJ - Approved / PC - Plan Check / etc.)
         gross_sf        = extract_number(cv, "numeric_mkvbbxbv")
         livable_sf      = extract_number(cv, "numeric_mm0q2d4e")
         width_ft        = extract_number(cv, "numeric_mm1bxp3p")
@@ -370,12 +412,6 @@ def transform_items(raw_items: list) -> list:
         ahj_date        = extract_col(cv, "date_mkzvxjd3")
         footprint_note  = extract_col(cv, "text_mkvbd7bd")
         portfolio       = extract_portfolio_name(cv, "board_relation_mkwb8d4b")
-
-        # ── Exclude plans not in an active permitting status ────────────────
-        # Only Approved and Plan Check plans appear in the app.
-        if status not in ACTIVE_STATUSES:
-            excluded_count += 1
-            continue
 
         # ── Derive length from text field (may be "50" or "50ft" etc.) ──────
         length_ft = None
@@ -406,9 +442,11 @@ def transform_items(raw_items: list) -> list:
 
         record = {
             "_id":                  item["id"],   # internal — used for dedup, stripped later
+            "mondayItemId":         item["id"],   # stable row identifier for Intelligence
             "name":                 name,
             "designNumber":         design_number or None,
-            "bsPlanNumber":         bs_plan_number or None,  # floor plan identity (Problem 2 diversity key)
+            "bsPlanNumber":         bs_plan_number,          # normalized floor plan identity
+            "rawBsPlanNumber":      raw_bs_plan_number or None,
             "bldrNumber":           bldr_number or None,     # structural permit number
             "portfolio":            portfolio_key,
             "type":                 item_type or None,
@@ -420,7 +458,9 @@ def transform_items(raw_items: list) -> list:
             "lengthFt":             int(length_ft) if length_ft else None,
             "bedrooms":             int(bedrooms) if bedrooms else None,
             "bathrooms":            bathrooms,     # keep as float for 1.5, 2.5 etc.
-            "status":               status or None,
+            "status":               current_phase or None,   # temporary Finder compatibility alias
+            "currentPhase":         current_phase or None,
+            "phaseGroup":           derive_phase_group(current_phase),
             "jurisdiction":         norm_juris,
             "rawJurisdiction":      raw_juris or None,    # original Monday value
             "factsheetUrl":         best_url,
@@ -438,25 +478,44 @@ def transform_items(raw_items: list) -> list:
         if portfolio_key not in items_by_portfolio:
             items_by_portfolio[portfolio_key] = []
         items_by_portfolio[portfolio_key].append(record)
+        if current_phase in ACTIVE_STATUSES:
+            if portfolio_key not in active_items_by_portfolio:
+                active_items_by_portfolio[portfolio_key] = []
+            active_items_by_portfolio[portfolio_key].append(record)
 
     # ── Second pass: mark primary variants ──────────────────────────────────
-    primary_ids = determine_primary_variant(items_by_portfolio)
+    primary_source_by_portfolio = {}
+    for portfolio, items in items_by_portfolio.items():
+        primary_source_by_portfolio[portfolio] = active_items_by_portfolio.get(portfolio) or items
+
+    primary_ids = determine_primary_variant(primary_source_by_portfolio)
     for record in results:
         if record["_id"] in primary_ids:
             record["primaryVariant"] = True
             # Scoreable = primary variant of a Main type plan with enough data to score.
-            # Status filter above already guarantees Approved or Plan Check — no need
-            # to re-check status here.
+            # The export now includes all phases, so keep Finder scoring limited
+            # to Approved and Plan Check records.
             is_main  = (record.get("type") or "").lower() == "main"
             has_data = bool(record.get("bedrooms") or record.get("grossSF"))
-            record["scoreable"] = bool(is_main and has_data)
+            is_active = record.get("currentPhase") in ACTIVE_STATUSES
+            record["scoreable"] = bool(is_active and is_main and has_data)
 
     # ── Strip internal _id field before export ───────────────────────────────
     for record in results:
         del record["_id"]
 
-    print(f"   ✓ {len(results)} plans included (Approved + Plan Check)")
-    print(f"   ✓ {excluded_count} plans excluded (CD / SD / In Development / blank)")
+    phase_counts = {}
+    group_counts = {}
+    for record in results:
+        phase = record.get("currentPhase") or "(blank)"
+        group = record.get("phaseGroup") or "unknown"
+        phase_counts[phase] = phase_counts.get(phase, 0) + 1
+        group_counts[group] = group_counts.get(group, 0) + 1
+
+    print(f"   ✓ {len(results)} plans included (all Current Phase values)")
+    print(f"   ✓ {skipped_count} placeholder/test plans skipped")
+    print(f"   ✓ Current Phase values: {phase_counts}")
+    print(f"   ✓ Phase groups: {group_counts}")
     primary_count   = sum(1 for r in results if r["primaryVariant"])
     scoreable_count = sum(1 for r in results if r["scoreable"])
     print(f"   ✓ {primary_count} primary variants identified")
