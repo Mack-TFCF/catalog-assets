@@ -19,27 +19,31 @@ Usage:
 GitHub Actions runs this on a schedule (see .github/workflows/sync-catalog.yml).
 
 Column mapping (board 9938332033):
-  name                  → name
-  text_mkvnr32v         → designNumber
-  color_mm0q2xxk        → type              (status: Main / Accessory)
-  color_mkyrtwgf        → status            (Current Phase: AHJ - Approved / PC - Plan Check / CD / SD / etc.)
-  numeric_mkvbbxbv      → grossSF
-  numeric_mm0q2d4e      → livableSF
-  numeric_mm1bxp3p      → widthFt
-  text_mkvgnxaj         → lengthFt          (text field, not numeric)
-  numeric_mkvbkb7c      → bedrooms
-  numeric_mkvb2bw7      → bathrooms
-  dropdown_mkvnkg2h     → style
-  color_mkyht2q7        → jurisdiction      (status: Altadena / Palisades / both)
-  dropdown_mkvbac06     → permittingJurisdiction
-  link_mkvcth2r         → factsheetUrl      (link field)
-  link_mm3a1xdk         → websiteUrl        (link field)
-  formula_mm0qdzgv      → licenseFee        (formula — dollar amount)
-  color_mkyrtwgf        → currentPhase      (same field — stored for reference)
-  color_mkyvv8jk        → approvedStatus    (status)
-  date_mkzvxjd3         → ahjDate
-  text_mkvbd7bd         → footprintNote     (free text, e.g. "30x50")
-  board_relation_mkwb8d4b → portfolio       (relation — use linked item name)
+  name                    → name
+  text_mkvnr32v           → designNumber
+  text_mm0pe0s0           → countyPlanNumber   (LA County Standard Plan #, e.g. "25-01")
+  text_mm0p5s7r           → bsPlanNumber       (B&S floor plan identity key)
+  text_mkvbtdj0           → rpplNumber         (RPPL #)
+  text_mkvb7334           → bldrNumber         (Permit Number - BLDR #)
+  color_mm0q2xxk          → type               (status: Main / ADU / Garage)
+  color_mkyrtwgf          → currentPhase       (AHJ - Approved / PC - Plan Check / CD / SD / etc.)
+  color_mkyht2q7          → jurisdiction       (raw Monday value: "LA County", "LA City")
+  color_mkyhbd15          → codeCycle          (Code Cycle - Building)
+  color_mkzvv8jk          → approvedStatus     (status)
+  numeric_mkvbbxbv        → grossSF
+  numeric_mm0q2d4e        → livableSF
+  numeric_mm1bxp3p        → widthFt
+  numeric_mkvbkb7c        → bedrooms
+  numeric_mkvb2bw7        → bathrooms
+  numeric_mkyaz2b4        → licenseFee         (numeric field)
+  dropdown_mkvbac06       → permittingJurisdiction
+  dropdown_mkvnkg2h       → style
+  link_mkvcth2r           → factsheetUrl       (link field)
+  link_mm3a1xdk           → websiteUrl         (link field — stored separately from factsheetUrl)
+  date_mkzvxjd3           → ahjDate
+  text_mkvgnxaj           → lengthFt           (text field — cast to float)
+  text_mkvbd7bd           → footprintNote      (free text, e.g. "30x50")
+  board_relation_mkwb8d4b → portfolio          (relation — use linked item name)
 """
 
 import os
@@ -61,28 +65,31 @@ CATALOG_BOARD_ID = "9938332033"
 MONDAY_API_URL   = "https://api.monday.com/v2"
 OUTPUT_PATH      = "catalog.json"                  # path in the GitHub repo
 
-# Columns to fetch (everything the plan finder needs)
+# Columns to fetch (all catalog fields — no filtering in sync layer)
 COLUMN_IDS = [
-    "text_mkvnr32v",          # Design Number
-    "text_mm0p5s7r",          # B&S Standard Plan # — floor plan identity key (same # = same floor plan)
-    "text_mkvb7334",          # Permit Number - BLDR # — structural variant identity
-    "color_mm0q2xxk",         # Type (Main / ADU / Garage)
-    "color_mkyrtwgf",         # Current Phase (AHJ - Approved / PC - Plan Check / etc.)
-    "numeric_mkvbbxbv",       # Gross SF
-    "numeric_mm0q2d4e",       # Livable SF
-    "numeric_mm1bxp3p",       # Width (Ft)
-    "text_mkvgnxaj",          # Length (Ft) — text field
-    "numeric_mkvbkb7c",       # Bedrooms
-    "numeric_mkvb2bw7",       # Bathrooms
-    "dropdown_mkvnkg2h",      # Style
-    "color_mkyht2q7",         # Jurisdiction (LA County / LA City)
-    "dropdown_mkvbac06",      # Permitting Jurisdiction
-    "link_mkvcth2r",          # Current Factsheet Link
-    "link_mm3a1xdk",          # Website URL
-    "formula_mm0qdzgv",       # Licence Fee
-    "color_mkzvv8jk",         # Approved status
-    "date_mkzvxjd3",          # AHJ Date
-    "text_mkvbd7bd",          # Footprint (free text)
+    "text_mkvnr32v",           # Design Number
+    "text_mm0pe0s0",           # County Plan Number (LA Standard Plan #)
+    "text_mm0p5s7r",           # B&S Standard Plan # — floor plan identity key
+    "text_mkvbtdj0",           # RPPL #
+    "text_mkvb7334",           # Permit Number - BLDR # — structural variant identity
+    "color_mm0q2xxk",          # Type (Main / ADU / Garage)
+    "color_mkyrtwgf",          # Current Phase (AHJ - Approved / PC - Plan Check / etc.)
+    "color_mkyht2q7",          # Jurisdiction (raw: LA County / LA City)
+    "color_mkyhbd15",          # Code Cycle (Building)
+    "color_mkzvv8jk",          # Approved status
+    "numeric_mkvbbxbv",        # Gross SF
+    "numeric_mm0q2d4e",        # Livable SF
+    "numeric_mm1bxp3p",        # Width (Ft)
+    "numeric_mkvbkb7c",        # Bedrooms
+    "numeric_mkvb2bw7",        # Bathrooms
+    "numeric_mkyaz2b4",        # Licence Fee (numeric)
+    "dropdown_mkvbac06",       # Permitting Jurisdiction
+    "dropdown_mkvnkg2h",       # Style
+    "link_mkvcth2r",           # Current Factsheet Link
+    "link_mm3a1xdk",           # Website URL
+    "date_mkzvxjd3",           # AHJ Date
+    "text_mkvgnxaj",           # Length (Ft) — text field, cast to float
+    "text_mkvbd7bd",           # Footprint (free text)
     "board_relation_mkwb8d4b", # Portfolio (linked board)
 ]
 
@@ -384,30 +391,30 @@ def transform_items(raw_items: list) -> list:
         cv = item["column_values"]
 
         # ── Extract all fields ──────────────────────────────────────────────
-        design_number   = extract_col(cv, "text_mkvnr32v")
-        raw_bs_plan_number = extract_col(cv, "text_mm0p5s7r") # B&S Standard Plan # — floor plan identity
-        bs_plan_number  = normalize_bs_plan_number(raw_bs_plan_number)
-        bldr_number     = extract_col(cv, "text_mkvb7334")   # Permit Number - BLDR #
-        item_type       = extract_col(cv, "color_mm0q2xxk")       # Type (Main / Accessory)
-        current_phase   = extract_col(cv, "color_mkyrtwgf")        # Current Phase (AHJ - Approved / PC - Plan Check / etc.)
-        gross_sf        = extract_number(cv, "numeric_mkvbbxbv")
-        livable_sf      = extract_number(cv, "numeric_mm0q2d4e")
-        width_ft        = extract_number(cv, "numeric_mm1bxp3p")
-        length_ft_raw   = extract_col(cv, "text_mkvgnxaj")         # text field
-        bedrooms        = extract_number(cv, "numeric_mkvbkb7c")
-        bathrooms       = extract_number(cv, "numeric_mkvb2bw7")
-        # ── Normalise style and jurisdiction to app-canonical values ────────
+        design_number      = extract_col(cv, "text_mkvnr32v")
+        county_plan_number = extract_col(cv, "text_mm0pe0s0")       # LA County Standard Plan #
+        raw_bs_plan_number = extract_col(cv, "text_mm0p5s7r")       # B&S Standard Plan # — floor plan identity
+        bs_plan_number     = normalize_bs_plan_number(raw_bs_plan_number)
+        rppl_number        = extract_col(cv, "text_mkvbtdj0")       # RPPL #
+        bldr_number        = extract_col(cv, "text_mkvb7334")       # Permit Number - BLDR #
+        item_type          = extract_col(cv, "color_mm0q2xxk")      # Type (Main / ADU / Garage)
+        current_phase      = extract_col(cv, "color_mkyrtwgf")      # Current Phase
+        code_cycle         = extract_col(cv, "color_mkyhbd15")      # Code Cycle (Building)
+        gross_sf           = extract_number(cv, "numeric_mkvbbxbv")
+        livable_sf         = extract_number(cv, "numeric_mm0q2d4e")
+        width_ft           = extract_number(cv, "numeric_mm1bxp3p")
+        length_ft_raw      = extract_col(cv, "text_mkvgnxaj")       # text field — cast to float
+        bedrooms           = extract_number(cv, "numeric_mkvbkb7c")
+        bathrooms          = extract_number(cv, "numeric_mkvb2bw7")
+        # ── Normalise style; jurisdiction stored as raw Monday value ─────────
         raw_style    = extract_col(cv, "dropdown_mkvnkg2h")
         norm_style   = STYLE_MAP.get(raw_style, raw_style) if raw_style else None
 
         raw_juris    = extract_col(cv, "color_mkyht2q7")
         perm_juris   = extract_col(cv, "dropdown_mkvbac06")
-        # Prefer the Jurisdiction status column; fall back to Permitting Jurisdiction
-        best_juris_raw = raw_juris or perm_juris or ""
-        norm_juris   = JURISDICTION_MAP.get(best_juris_raw, best_juris_raw) or None
         factsheet_url   = extract_link(cv, "link_mkvcth2r")
         website_url     = extract_link(cv, "link_mm3a1xdk")
-        license_fee     = extract_col(cv, "formula_mm0qdzgv")
+        license_fee     = extract_number(cv, "numeric_mkyaz2b4")
         approved_status = extract_col(cv, "color_mkzvv8jk")
         ahj_date        = extract_col(cv, "date_mkzvxjd3")
         footprint_note  = extract_col(cv, "text_mkvbd7bd")
@@ -419,9 +426,6 @@ def transform_items(raw_items: list) -> list:
             m = re.search(r"(\d+(?:\.\d+)?)", length_ft_raw)
             if m:
                 length_ft = float(m.group(1))
-
-        # ── Derive best factsheet URL ────────────────────────────────────────
-        best_url = factsheet_url or website_url or None
 
         # ── Derive base portfolio name — strip structural variant suffixes ────
         # "(Vault)", "(Truss)", "(Attached Garage)", "(Two Story)" etc. are
@@ -445,8 +449,10 @@ def transform_items(raw_items: list) -> list:
             "mondayItemId":         item["id"],   # stable row identifier for Intelligence
             "name":                 name,
             "designNumber":         design_number or None,
+            "countyPlanNumber":     county_plan_number or None,
             "bsPlanNumber":         bs_plan_number,          # normalized floor plan identity
             "rawBsPlanNumber":      raw_bs_plan_number or None,
+            "rpplNumber":           rppl_number or None,
             "bldrNumber":           bldr_number or None,     # structural permit number
             "portfolio":            portfolio_key,
             "type":                 item_type or None,
@@ -460,11 +466,13 @@ def transform_items(raw_items: list) -> list:
             "bathrooms":            bathrooms,     # keep as float for 1.5, 2.5 etc.
             "status":               current_phase or None,   # temporary Finder compatibility alias
             "currentPhase":         current_phase or None,
+            "codeCycle":            code_cycle or None,
             "phaseGroup":           derive_phase_group(current_phase),
-            "jurisdiction":         norm_juris,
+            "jurisdiction":         raw_juris or perm_juris or None,
             "rawJurisdiction":      raw_juris or None,    # original Monday value
-            "factsheetUrl":         best_url,
-            "licenseFee":           license_fee or None,
+            "factsheetUrl":         factsheet_url or None,
+            "websiteUrl":           website_url or None,
+            "licenseFee":           license_fee,
             "ahjDate":              ahj_date or None,
             "footprintNote":        footprint_note or None,
             "slug":                 slug,
